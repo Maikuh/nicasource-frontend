@@ -10,9 +10,9 @@ import Container from '@mui/material/Container'
 import { AppLink } from '../components/AppLink'
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
-import { registerAtom } from '../atoms/user.atom'
+import { loginAtom } from '../atoms/user.atom'
+import { useNavigate } from 'react-router-dom'
 
 function Copyright (props: any) {
   return (
@@ -32,13 +32,13 @@ function Copyright (props: any) {
   )
 }
 
-export default function RegisterPage () {
-  const { register: registerField, handleSubmit } = useForm()
-  const register = useSetAtom(registerAtom)
+export default function LoginPage () {
+  const { register, handleSubmit } = useForm()
+  const login = useSetAtom(loginAtom)
   const navigate = useNavigate()
 
   async function onSubmit (data: any) {
-    await register(data)
+    await login(data)
     navigate('/')
   }
 
@@ -56,7 +56,7 @@ export default function RegisterPage () {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component='h1' variant='h5'>
-          Register
+          Login
         </Typography>
         <Box
           component='form'
@@ -67,17 +67,7 @@ export default function RegisterPage () {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                {...registerField('fullName')}
-                autoComplete='full-name'
-                required
-                fullWidth
-                label='Full Name'
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                {...registerField('email')}
+                {...register('email')}
                 required
                 fullWidth
                 label='Email Address'
@@ -86,38 +76,13 @@ export default function RegisterPage () {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                {...registerField('password')}
+                {...register('password')}
                 required
                 fullWidth
                 label='Password'
                 type='password'
                 autoComplete='new-password'
               />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                {...registerField('photoUrl')}
-                required
-                fullWidth
-                label='Photo URL'
-                type='url'
-                autoComplete='photoUrl'
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id='role'>Role</InputLabel>
-                <Select
-                  {...registerField('role')}
-                  labelId='role'
-                  label='Role'
-                  defaultValue='student'
-                >
-                  <MenuItem value='student'>Student</MenuItem>
-                  <MenuItem value='teacher'>Teacher</MenuItem>
-                </Select>
-              </FormControl>
             </Grid>
           </Grid>
           <Button
@@ -126,11 +91,13 @@ export default function RegisterPage () {
             variant='contained'
             sx={{ mt: 3, mb: 2 }}
           >
-            Register
+            Login
           </Button>
           <Grid container justifyContent='flex-end'>
             <Grid item>
-              <AppLink to='/login'>Already have an account? Login</AppLink>
+              <AppLink to='/register'>
+                Don't have an account yet? Register
+              </AppLink>
             </Grid>
           </Grid>
         </Box>

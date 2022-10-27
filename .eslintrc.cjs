@@ -14,7 +14,9 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["react", "@typescript-eslint"],
-  rules: {},
+  rules: {
+    curly: 'multi-line'
+  },
   settings: {
     react: {
       version: "detect"
