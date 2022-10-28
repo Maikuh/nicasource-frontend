@@ -1,21 +1,32 @@
 import { Typography } from '@mui/material'
-import { useAtomValue } from 'jotai'
-import React from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import React, { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
-import { userAtomLoadable } from '../../atoms/user.atom'
+import {
+  jwtAtom,
+  persistentJwtExpAtom,
+  userAtom,
+  userAtomLoadable
+} from '../../atoms/user.atom'
 
 export default function PrivateRoute ({
   component
 }: React.PropsWithChildren & {
   component: JSX.Element
 }) {
-  const user = useAtomValue(userAtomLoadable)
+  const jwt = useAtomValue(jwtAtom)
+  const jwtExpiryDate = useAtomValue(persistentJwtExpAtom)
+  const [user, fetchUser] = useAtom(userAtom)
+  const isJwtExpired =
+    jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate
 
-  if (user.state === 'hasError') return <Navigate to='/login' />
+  useEffect(() => {
+    if (jwt) fetchUser()
+  }, [])
 
-  if (user.state === 'loading') return <Typography>Loading...</Typography>
+  if (!jwt || isJwtExpired) return <Navigate to='/login' />
 
-  if (!user.data) return <Navigate to='/login' />
+  if (!user) return <Typography>Loading...</Typography>
 
   return <>{component}</>
 }

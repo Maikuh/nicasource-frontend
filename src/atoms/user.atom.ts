@@ -9,34 +9,16 @@ import { snackbarAtom } from './snackbar.atom'
 const currentUserAtom = atom<User | null>(null)
 
 export const userAtom = atom(
-  async get => {
-    const user = get(currentUserAtom)
-
-    if (user) return user
-
-    const jwt = get(jwtAtom)
-    const jwtExpiryDate = get(persistentJwtExpAtom)
-
-    if (
-      !jwt ||
-      (jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate)
-    ) {
-      return null
-    }
-
-    const { data } = await client.get<User>('/users/me')
-
-    return data
-  },
+  get => get(currentUserAtom),
   async (get, set, update: User | undefined) => {
     const jwt = get(jwtAtom)
     const jwtExpiryDate = get(persistentJwtExpAtom)
+    const isJwtExpired =
+      jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate
 
-    if (
-      !jwt ||
-      (jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate)
-    ) {
+    if (!jwt || isJwtExpired) {
       set(currentUserAtom, null)
+      set(jwtAtom, null)
       return
     }
 
@@ -111,12 +93,12 @@ export const logoutAtom = atom(null, async (_, set) => {
 })
 
 const persistentJwtAtom = atomWithStorage<string | null>('access_token', null)
-const persistentJwtExpAtom = atomWithStorage<number | null>(
+export const persistentJwtExpAtom = atomWithStorage<number | null>(
   'access_token_expiry_date',
   null
 )
 
-const jwtAtom = atom(
+export const jwtAtom = atom(
   get => {
     const jwt = get(persistentJwtAtom)
 
