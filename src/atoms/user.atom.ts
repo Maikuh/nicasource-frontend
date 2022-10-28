@@ -1,41 +1,66 @@
 import axios, { AxiosError } from 'axios'
-import { atom, useSetAtom } from 'jotai'
+import { atom } from 'jotai'
 import { atomWithStorage, loadable } from 'jotai/utils'
+import { client } from '../api/client'
 import { setAxiosBearerTokenHelper } from '../helpers/axios.helpers'
+import { User } from '../types/User.interface'
 import { snackbarAtom } from './snackbar.atom'
 
-export const userAtom = atom<any | null>(async get => {
-  const jwt = get(jwtAtom)
-  const jwtExpiryDate = get(persistentJwtExpAtom)
+const currentUserAtom = atom<User | null>(null)
 
-  if (!jwt || (jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate))
-    return null
+export const userAtom = atom(
+  async get => {
+    const user = get(currentUserAtom)
 
-  try {
-    const { data } = await axios.get('http://localhost:3000/users/me')
+    if (user) return user
+
+    const jwt = get(jwtAtom)
+    const jwtExpiryDate = get(persistentJwtExpAtom)
+
+    if (
+      !jwt ||
+      (jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate)
+    ) {
+      return null
+    }
+
+    const { data } = await client.get<User>('/users/me')
 
     return data
-  } catch (error) {
-    const setSnack = useSetAtom(snackbarAtom)
+  },
+  async (get, set, update: User | undefined) => {
+    const jwt = get(jwtAtom)
+    const jwtExpiryDate = get(persistentJwtExpAtom)
 
-    setSnack({
-      open: true,
-      message: (error as AxiosError<any>).response?.data.message,
-      variant: 'error'
-    })
+    if (
+      !jwt ||
+      (jwtExpiryDate && Math.floor(Date.now() / 1000) > jwtExpiryDate)
+    ) {
+      set(currentUserAtom, null)
+      return
+    }
 
-    throw error
+    try {
+      const { data } = await client.get<User>('/users/me')
+
+      set(currentUserAtom, data)
+    } catch (error) {
+      set(snackbarAtom, {
+        open: true,
+        message: (error as AxiosError<any>).response?.data.message,
+        variant: 'error'
+      })
+
+      throw error
+    }
   }
-})
+)
 
 export const userAtomLoadable = loadable(userAtom)
 
 export const loginAtom = atom(null, async (get, set, creds) => {
   try {
-    const { data } = await axios.post(
-      'http://localhost:3000/users/login',
-      creds
-    )
+    const { data } = await client.post('/users/login', creds)
 
     set(jwtAtom, data)
     set(snackbarAtom, {
@@ -56,10 +81,7 @@ export const loginAtom = atom(null, async (get, set, creds) => {
 
 export const registerAtom = atom(null, async (get, set, userData) => {
   try {
-    const { data } = await axios.post(
-      'http://localhost:3000/users/register',
-      userData
-    )
+    const { data } = await axios.post('/users/register', userData)
 
     set(jwtAtom, data)
     set(snackbarAtom, {

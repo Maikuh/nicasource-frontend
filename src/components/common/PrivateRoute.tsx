@@ -1,16 +1,15 @@
 import { Typography } from '@mui/material'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { userAtomLoadable } from '../../atoms/user.atom'
 
 export default function PrivateRoute ({
-  component,
-  ...props
+  component
 }: React.PropsWithChildren & {
   component: JSX.Element
 }) {
-  const [user] = useAtom(userAtomLoadable)
+  const user = useAtomValue(userAtomLoadable)
 
   if (user.state === 'hasError') return <Navigate to='/login' />
 
