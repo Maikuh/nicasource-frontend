@@ -35,3 +35,14 @@ export const createVideoAtom = atom(null, async (get, set, video) => {
     variant: 'success'
   })
 })
+
+const selectedVideoAtom = atom<any | null>(null)
+
+export const videoDetailsAtom = atom(
+  get => get(selectedVideoAtom),
+  async (get, set, id) => {
+    const { data } = await axios.get(`http://localhost:3000/videos/${id}`)
+
+    set(selectedVideoAtom, data)
+  }
+)

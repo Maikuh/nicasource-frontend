@@ -1,8 +1,10 @@
+import axios from 'axios'
 import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import PrivateRoute from './components/common/PrivateRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import VideoDetailsPage from './pages/VideoDetailsPage'
 import VideosPage from './pages/VideosPage'
 
 export const router = createBrowserRouter([
@@ -17,6 +19,10 @@ export const router = createBrowserRouter([
       {
         path: '/videos',
         element: <PrivateRoute component={<VideosPage />} />
+      },
+      {
+        path: '/videos/:id',
+        element: <PrivateRoute component={<VideoDetailsPage />} />
       }
     ]
   },

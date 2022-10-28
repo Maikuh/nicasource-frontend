@@ -12,15 +12,19 @@ import {
 import { red } from '@mui/material/colors'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '../../atoms/user.atom'
+import InfoIcon from '@mui/icons-material/InfoOutlined'
+import { useNavigate } from 'react-router-dom'
 
 export default function VideoCard ({
   title,
   creatorPhotoUrl,
   createdAt,
   videoSrcUrl,
-  creatorId
+  creatorId,
+  videoId
 }: any) {
   const user = useAtomValue(userAtom)
+  const navigate = useNavigate()
   const videoUrlId = videoSrcUrl.split('watch?v=')[1]
   const isFollowingCreator =
     user.following.findIndex(creator => creator.id === creatorId) > 0
@@ -69,6 +73,9 @@ export default function VideoCard ({
                 : 'inherit'
             }
           />
+        </IconButton>
+        <IconButton onClick={() => navigate(`/videos/${videoId}`)}>
+          <InfoIcon />
         </IconButton>
         <IconButton aria-label='share' href={videoSrcUrl} target='_blank'>
           <OpenInNewIcon />

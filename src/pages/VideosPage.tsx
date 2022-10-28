@@ -45,12 +45,12 @@ export default function VideosPage () {
         {videos.data.map(video => (
           <Grid item xs={12} sm={6} md={4} key={video.id} zeroMinWidth>
             <VideoCard
+              videoId={video.id}
               title={video.title}
               createdAt={video.createdAt}
               creatorId={video.creator.id}
               creatorPhotoUrl={video.creator.photoUrl}
               videoSrcUrl={video.srcUrl}
-              videoId={video.srcUrl.split('watch?v=')[1]}
             />
           </Grid>
         ))}
