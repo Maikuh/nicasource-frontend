@@ -8,7 +8,7 @@ export default function PrivateRoute ({
   component,
   ...props
 }: React.PropsWithChildren & {
-  component: React.FunctionComponent
+  component: JSX.Element
 }) {
   const [user] = useAtom(userAtomLoadable)
 
@@ -18,5 +18,5 @@ export default function PrivateRoute ({
 
   if (!user.data) return <Navigate to='/login' />
 
-  return <>{component(props)}</>
+  return <>{component}</>
 }

@@ -12,11 +12,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <PrivateRoute component={VideosPage} />
+        element: <PrivateRoute component={<VideosPage />} />
       },
       {
         path: '/videos',
-        element: <PrivateRoute component={VideosPage} />
+        element: <PrivateRoute component={<VideosPage />} />
       }
     ]
   },
