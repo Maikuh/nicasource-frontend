@@ -12,8 +12,7 @@ export default function PrivateRoute ({
 }) {
   const [user] = useAtom(userAtomLoadable)
 
-  if (user.state === 'hasError')
-    return <Typography>{JSON.stringify(user.error)}</Typography>
+  if (user.state === 'hasError') return <Navigate to='/login' />
 
   if (user.state === 'loading') return <Typography>Loading...</Typography>
 
