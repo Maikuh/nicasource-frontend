@@ -21,6 +21,11 @@ export default function UserAvatar () {
     setAnchorEl(null)
   }
 
+  function onProfileClick () {
+    handleMenuClose()
+    navigate('/profile')
+  }
+
   async function onLogout () {
     await logout()
     navigate('/login')
@@ -46,7 +51,7 @@ export default function UserAvatar () {
             'aria-labelledby': 'basic-button'
           }}
         >
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+          <MenuItem onClick={onProfileClick}>Profile</MenuItem>
           <MenuItem onClick={onLogout}>Logout</MenuItem>
         </Menu>
       </>

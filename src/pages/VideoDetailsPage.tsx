@@ -20,17 +20,18 @@ export default function VideoDetailsPage () {
   const { id } = useParams()
   const [details, fetchDetails] = useAtom(videoDetailsAtom)
   const currentUser = useAtomValue(userAtom)
-  const isFollowingCreator =
-    currentUser.following.findIndex(
-      creator => creator.id === details.creator.id
-    ) > 0
-  const videoUrlId = details.srcUrl.split('watch?v=')[1]
 
   useEffect(() => {
     if (!details) fetchDetails(id)
   })
 
   if (!details) return <Typography>Loading...</Typography>
+
+  const isFollowingCreator =
+    currentUser.following.findIndex(
+      creator => creator.id === details.creator.id
+    ) > 0
+  const videoUrlId = details.srcUrl.split('watch?v=')[1]
 
   return (
     <Paper elevation={2} sx={{ p: 4 }}>
