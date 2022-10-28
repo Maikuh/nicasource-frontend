@@ -19,7 +19,7 @@ import { userAtom } from '../atoms/user.atom'
 export default function VideoDetailsPage () {
   const { id } = useParams()
   const [details, fetchDetails] = useAtom(videoDetailsAtom)
-  const currentUser = useAtomValue(userAtom)
+  const currentUser = useAtomValue(userAtom)!
 
   useEffect(() => {
     if (!details) fetchDetails(id)

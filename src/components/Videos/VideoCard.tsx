@@ -23,7 +23,7 @@ export default function VideoCard ({
   creatorId,
   videoId
 }: any) {
-  const user = useAtomValue(userAtom)
+  const user = useAtomValue(userAtom)!
   const navigate = useNavigate()
   const videoUrlId = videoSrcUrl.split('watch?v=')[1]
   const isFollowingCreator =
