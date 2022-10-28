@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 import { atom } from 'jotai'
 import { atomWithStorage, loadable } from 'jotai/utils'
 import { client } from '../api/client'
@@ -63,7 +63,7 @@ export const loginAtom = atom(null, async (get, set, creds) => {
 
 export const registerAtom = atom(null, async (get, set, userData) => {
   try {
-    const { data } = await axios.post('/users/register', userData)
+    const { data } = await client.post('/users/register', userData)
 
     set(jwtAtom, data)
     set(snackbarAtom, {
