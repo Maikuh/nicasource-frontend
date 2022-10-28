@@ -1,11 +1,37 @@
 import axios from 'axios'
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
+import { snackbarAtom } from './snackbar.atom'
 
-const videosAtom = atom(async get => {
-  const { data } = await axios.get('http://localhost:3000/videos')
+const videosListAtom = atom<any[] | null>(null)
 
-  return data
-})
+export const videosAtom = atom(
+  async get => {
+    const videos = get(videosListAtom)
+
+    if (!videos) {
+      const { data } = await axios.get('http://localhost:3000/videos')
+      return data
+    }
+
+    return videos
+  },
+  async (get, set, videos) => {
+    const { data } = await axios.get('http://localhost:3000/videos')
+
+    set(videosListAtom, data)
+  }
+)
 
 export const videosAtomLoadable = loadable(videosAtom)
+
+export const createVideoAtom = atom(null, async (get, set, video) => {
+  await axios.post('http://localhost:3000/videos', video)
+
+  set(videosAtom)
+  set(snackbarAtom, {
+    open: true,
+    message: 'Video created successfully',
+    variant: 'success'
+  })
+})
